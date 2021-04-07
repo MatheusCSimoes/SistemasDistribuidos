@@ -8,7 +8,7 @@ HOST = 'localhost' # maquina onde esta o par passivo
 PORTA = 5000       # porta que o par passivo esta escutando
 
 # cria socket
-sock = socket.socket() # default: socket.AF_INET, socket.SOCK_STREAM 
+sock = socket.socket()
 
 # conecta-se com o par passivo
 sock.connect((HOST, PORTA)) 
@@ -16,14 +16,14 @@ sock.connect((HOST, PORTA))
 print("Para encerrar o programa entre com a mensagem: 'Encarrar conexao'.")
 while True:
     inputText = input("Entre com o nome do arquivo para busca: ") #le input do usuario
-    #caso o usuario entre com a msg 'Encerrar conexao' quebra o loop de envio e leitura
+    #caso o usuario entre com a msg 'Encerrar conexao' quebra o loop para encerrar conexao
     if inputText.upper() == 'Encerrar conexao'.upper(): 
         break
     
     # envia uma mensagem para o par conectado
     sock.send(inputText.encode())
 
-    #espera a resposta do par conectado (chamada pode ser BLOQUEANTE)
+    #espera a resposta do par conectado
     msg = sock.recv(1024) # argumento indica a qtde maxima de bytes da mensagem
 
     msg = str(msg, encoding='utf-8')

@@ -1,10 +1,3 @@
-Teste de arquivo para trabalho de sistemas distribuidos.
-Nesse trabalhor vamos implementar um sistemas distribuido onde é passado o nome de uma arquivo de texto
-para ser lido e devemos contar quantas vezes cada palabra do arquivo aparece. As palavras com mais 
-ocorrencia devem ser retornadas e printadas junto da quantidade de vezes que cada uma aparece.
-Teste de contagem de palavras em sitemas distribuidos.
-Sistema distribuido com arquitetura cliente/servidor centralizada e em camadas.
-
 um um um um um um um um um um um um um um um um um um um um um um um um um um um um um um um um um um
 dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois dois
 tres tres tres tres tres tres tres tres tres tres tres tres tres tres tres tres tres tres tres
@@ -13,6 +6,4 @@ cinco cinco cinco cinco cinco cinco cinco cinco cinco cinco cinco cinco
 seis seis seis seis seis seis seis seis seis seis seis
 sete sete sete sete sete sete sete sete sete
 oito oito oito oito oito oito oito oito
-
 nove nove nove nove
-

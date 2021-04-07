@@ -7,21 +7,21 @@ Recebe do usuário o nome do arquivo de busca e exibe na tela o resultado do pro
 (i) uma mensagem de erro indicando que o arquivo não foi encontrado; ou
 (ii) a lista de palavras com suas ocorrências.
 Refinamento:
-Dado que estamos utilizando uma arquitetura de sistemas centralizada (cliente/servidor) e uma de nossas camadas será focada no processamento,
-a lista de palavras virá pronta para exibição.
+A lista de palavras virá já ordenada e limitada às 10 mais comuns para a camada de interface. Logo, a camada de interface só precisa receber a 
+lista de palavras e exibir cada uma mantendo a ordem.
 
 2. Funcionalidades da camada de processamento: 
 Solicita o acesso ao arquivo texto. Se o arquivo for válido, realiza a contagem das palavras e prepara a resposta para ser devolvida para a 
 camada de interface. Se o arquivo for inválido, responde com a mensagem de erro.
 Refinamento:
-Caso o arquivo sejá válido, as palavras serão ordenadas de acordo com suas respectivas contagens e as 10 primeiras serão enviadas em formato de 
-json, com as palavras como chave e sua contagem como valor, para a camada de interface.
+Caso o arquivo seja válido, as palavras serão ordenadas de acordo com suas respectivas contagens e as 10 primeiras serão enviadas para a camada 
+de interface, a partir de um dicionário do python, em formato de json, onde as palavras são as chaves e seus contadores são os valores.
 
 3. Funcionalidades da camada de acesso aos dados: 
-Verifica se o arquivo exite em sua base. Se sim, devolve seu conteúdo inteiro. Caso contrário, envia uma mensagem de erro.
+Verifica se o arquivo existe em sua base. Se sim, devolve seu conteúdo inteiro. Caso contrário, envia uma mensagem de erro.
 
 Atividade 2
-Objetivo: Refinar a proposta de instaciação da arquitetura de software da aplicação definida na Atividade 1 para uma arquitetura de sistema 
+Objetivo: Refinar a proposta de instanciação da arquitetura de software da aplicação definida na Atividade 1 para uma arquitetura de sistema 
 cliente/servidor de dois níveis, com um servidor e um cliente, apresentada abaixo.
 
 Proposta de arquitetura de sistema:
@@ -36,15 +36,30 @@ com isso).
 
 Refinamento:
 1. 
-- Estrutura de dados que serão utilizadas: Dicionário do python para associar as palavras (keys) as suas respectivas contagens (valor).
-- A mensagem de requisição do cliente para o servidor possui apenas a string com o nome do arquivo de busca.
-- A mensagem de respota envia o Dicionário do python com as 10 palavras mais comuns em formato de um json serealizado, ou seja, um json como 
-string no caso em que o arquivo é válido e envia uma string com a mensagem de erro no caso em que o arquivo é inválido. Na mensagem de erro, os 
-primeiros 5 carácteres serão "Erro:" para que seja possível diferenciar uma mensagem de erro e uma mensagem de sucesso do lado do cliente.
+- Estrutura de dados que serão utilizadas: Dicionário do python para associar as palavras (keys) aos seus respectivos contadores (valor).
+- A mensagem de requisição do cliente para o servidor possui apenas a string com o nome do arquivo de busca. O nome do arquivo deve conter o 
+sufixo.
+- A mensagem de resposta envia o Dicionário do python com as 10 palavras mais comuns em formato de um json serializado, ou seja, um json como 
+string, no caso em que o arquivo é válido e envia uma string com a mensagem de erro no caso em que o arquivo é inválido. Na mensagem de erro, os 
+primeiros 5 caracteres serão "Erro:" para que seja possível diferenciar uma mensagem de erro e uma mensagem de sucesso no lado do cliente.
 2. 
 O cliente envia uma requisição com uma string com o nome do arquivo de busca ao servidor.
-Após o processamento o servidor envia uma resposta com o Dicionário das 10 palavras mais comuns ou a mensagem de erro.
+O servidor recebe o nome do arquivo do cliente e, após o processamento, envia uma resposta com o json das 10 palavras mais comuns 
+ou a mensagem de erro.
 3.
-Do lado do cliente, ao receber a resposta, verifica se os primeiro carácteres correspondem à "Erro:", se sim, apenas printa a mensagem de erro, 
+Do lado do cliente, ao receber a resposta, verifica se os primeiro caracteres correspondem à "Erro:", se sim, apenas printa a mensagem de erro, 
 caso contrário pega a string que deve conter um json e transforma novamente em Dicionário do python, então itera esse Dicionário para printar 
-cada palavra.
+cada palavra mantendo a ordem a qual veio.
+
+Atividade 3
+Objetivo: Implementar e avaliar a aplicação distribuída proposta, seguindo as definições da Atividade 2.
+
+Roteiro:
+1. Implemente o código do lado cliente e do lado servidor;
+2. Documente o código de forma concisa e clara;
+3. Experimente a aplicação usando diferentes arquivos de entrada.
+
+Implementação do código do lado do cliente feito e comentado/documentado no arquivo: cliente.py
+Implementação do código do lado do servidor feito e comentado/documentado no arquivo: servidor.py
+
+Arquivos utilizados como teste foram: inputTest1.txt e inputTest2.txt

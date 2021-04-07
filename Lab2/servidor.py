@@ -1,8 +1,8 @@
 # Lado servidor: Recebe o nome do arquvio pelo cliente e chama a camada de processamento, a camada de 
 # processamento chama a camada de acesso aos dados. Caso nao seja possivel abrir o arquivo, eh enviado uma 
 # mensagem de erro, caso contrario o texto do arquivo eh enviado como resposta para a camada de processamento.
-# Na camada de processamento eh feita a contagem de ocorrencia das palavras no texto e retorna um dicionario 
-# com as 10 palavra mais comuns e suas respectivas contagens.
+# Na camada de processamento eh feita a contagem de ocorrencia das palavras no texto e retorna para o lado do 
+# cliente um dicionario com as 10 palavra mais comuns e suas respectivas contagens.
 
 import socket
 
@@ -12,7 +12,7 @@ PORTA = 5000  # porta onde chegarao as mensagens para essa aplicacao
 def openFile(filename): # "camada de acesso aos dados"
 	text = ""
 	try:
-		f = open("testFiles/" + str(filename), "r") #abre o arquivo
+		f = open(str(filename), "r") #abre o arquivo
 		text = f.read() #le texto do arquivo
 	except:
 		#caso nao seja possivel abrir o arquivo, envia mensagem de erro
@@ -26,7 +26,7 @@ def getCommonWords(filename): # "camada de processamento"
 	try:
 		text = openFile(filename) #pega texto do arquivo chamando a "camada de acesso aos dados"
 	except Exception as ex:
-		return str(ex)
+		return str(ex) #no caso de erro, retorna a mensagem de erro
 
 	text = text.lower() #passa todas as palavras para letra minuscula
 
@@ -39,35 +39,35 @@ def getCommonWords(filename): # "camada de processamento"
 	allWords = [word for word in allWords if not word in stopwords] #removendo palavras nao importantes
 	words = set(allWords) #lista sem repeticao de palavras
 	wordsCount = dict() #dicionario para relacionar palavras a sua contagem de ocorrencia
-	for word in words:
-		wordsCount[word] = allWords.count(word) #coloca no dicionario o par palavra (key) e contagem (valor)
+	for word in words: 
+		#para cada palavra diferente no texto: coloca no dicionario o par palavra (key) e contagem (valor)
+		wordsCount[word] = allWords.count(word)
 
 	#ordena o dicionario de acordo com os valores da contagem e pega apenas os 10 primeiros
 	wordsCount = dict(sorted(wordsCount.items(), key=lambda item: item[1], reverse=True)[:10])
 	return str(wordsCount)
 
 # cria um socket para comunicacao
-sock = socket.socket() # valores default: socket.AF_INET, socket.SOCK_STREAM  
+sock = socket.socket()
 
 # vincula a interface e porta para comunicacao
 sock.bind((HOST, PORTA))
 
 # define o limite maximo de conexoes pendentes e coloca-se em modo de espera por conexao
-sock.listen(5) 
+sock.listen(1) 
 
 while True:
 	print ('Aguardando conexao')
 
-	# aceita a primeira conexao da fila (chamada pode ser BLOQUEANTE)
+	# aceita a primeira conexao da fila
 	novoSock, endereco = sock.accept() # retorna um novo socket e o endereco do par conectado
 	print ('Conectado com: ', endereco)
 
 	while True:
-		# depois de conectar-se, espera uma mensagem (chamada pode ser BLOQUEANTE))
+		# depois de conectar-se, espera uma mensagem
 		msg = novoSock.recv(1024) # argumento indica a qtde maxima de dados
 		if not msg: break 
 		else: 
-			#print('Mensagem recebida do cliente:', str(msg,  encoding='utf-8'))
 			filename = str(msg, encoding='utf-8') #pega nome do arquivo da mensagem que veio do cliente
 			novoSock.send(getCommonWords(filename).encode()) #envia resposta do processamento ao cliente 
 
