@@ -79,7 +79,7 @@ def acceptConnection(sock):
 	
 	# registra a nova conexao
 	lock.acquire()
-	conexoes[newSock] = address 
+	connections[newSock] = address 
 	lock.release()
 
 	return newSock, address
@@ -88,7 +88,7 @@ def getRequest(sock, address):
 	while True:
 		msg = sock.recv(1024) # argumento indica a qtde maxima de dados
 		if not msg:
-			print('Conexao encerrada com:', str(endr))
+			print('Conexao encerrada com:', str(address))
 
 			lock.acquire()
 			del connections[sock] #retira o cliente da lista de conexoes ativas
@@ -112,7 +112,6 @@ def main():
 		for ready in read:
 			if ready == sock:  #pedido novo de conexao
 				newSock, address = acceptConnection(sock)
-				print('Conectado com: ', address)
 				#cria nova thread para atender o cliente
 				thread = threading.Thread(target=getRequest, args=(newSock,address))
 				thread.start()
@@ -126,8 +125,8 @@ def main():
 					else: print('Nao podemos encerrar pois ha conexao ativas')
 				elif cmd.upper() == 'Aguardar e encerrar'.upper():
 					print('Aguardando todas as threads serem terminadas')
-					for c in clientes: #aguarda todas as threads terminarem
-						c.join()
+					for t in threads: #aguarda todas as threads terminarem
+						t.join()
 					sock.close() #encerra socket principal
 					sys.exit() #encerra o servidor
 				elif cmd.upper() == 'Conexoes'.upper(): #outro exemplo de comando para o servidor
